@@ -1,0 +1,26 @@
+[gd_scene load_steps=5 format=3 uid="uid://dlbyykikp1nj6"]
+
+[ext_resource type="PackedScene" uid="uid://cjhb03do3yqy5" path="res://Scenes/Game/Actors/Actor.tscn" id="1_lb2jd"]
+[ext_resource type="Resource" uid="uid://tvwwgj4e56uu" path="res://Scenes/Game/Actors/Opponent/OpponentsStats.tres" id="2_sa5w4"]
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_1oj4a"]
+top_radius = 0.75
+bottom_radius = 0.75
+height = 2.25
+radial_segments = 16
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_a5xfy"]
+size = Vector3(2, 2, 2)
+
+[node name="Opponent" instance=ExtResource("1_lb2jd")]
+_stats = ExtResource("2_sa5w4")
+
+[node name="Mesh" parent="." index="1"]
+mesh = SubResource("CylinderMesh_1oj4a")
+
+[node name="Hitbox" parent="." index="3"]
+collision_layer = 2
+collision_mask = 2
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Hitbox" index="0"]
+shape = SubResource("BoxShape3D_a5xfy")

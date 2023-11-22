@@ -1,0 +1,12 @@
+[gd_resource type="Resource" load_steps=2 format=3 uid="uid://tvwwgj4e56uu"]
+
+[ext_resource type="Script" path="res://Scenes/Game/Actors/ActorStats.cs" id="1_4fdl8"]
+
+[resource]
+script = ExtResource("1_4fdl8")
+MaxHealth = 1.0
+Speed = 1.0
+Damage = 1.0
+Knockback = 1.0
+KnockbackSpeed = 2.0
+KnockbackDecceleration = 3.0

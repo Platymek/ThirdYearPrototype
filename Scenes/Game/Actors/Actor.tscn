@@ -1,0 +1,111 @@
+[gd_scene load_steps=7 format=3 uid="uid://cjhb03do3yqy5"]
+
+[ext_resource type="Script" path="res://Scenes/Game/Actors/Actor.cs" id="1_034el"]
+[ext_resource type="Script" path="res://Scenes/Game/Actors/AttackStats.cs" id="2_8si21"]
+[ext_resource type="Material" uid="uid://dualllpvchveu" path="res://Scenes/Game/Toon.tres" id="2_8tvfe"]
+
+[sub_resource type="Animation" id="Animation_e2v0j"]
+resource_name = "idle"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("AttackStats:Damage")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("AttackStats:Knockback")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("AttackStats:CheckDamage")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath(".:_stateCancellable")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath(".:_chargePunchState")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+
+[sub_resource type="Animation" id="Animation_4gvcp"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("AttackStats:Hurtbox")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [null]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_fkn7o"]
+_data = {
+"RESET": SubResource("Animation_4gvcp"),
+"idle": SubResource("Animation_e2v0j")
+}
+
+[node name="Actor" type="Node3D"]
+script = ExtResource("1_034el")
+State = "idle"
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_fkn7o")
+}
+
+[node name="Mesh" type="MeshInstance3D" parent="."]
+material_override = ExtResource("2_8tvfe")
+
+[node name="AttackStats" type="Node" parent="."]
+script = ExtResource("2_8si21")
+
+[node name="Hitbox" type="Area3D" parent="."]
+monitoring = false
+
+[node name="States" type="Node" parent="."]
+
+[node name="Idle" type="Node" parent="States"]
