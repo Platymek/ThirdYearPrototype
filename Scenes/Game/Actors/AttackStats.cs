@@ -12,7 +12,10 @@ public partial class AttackStats : Node
 	[Export]
     public bool CheckDamage = false;
 
-	NodePath _hurtbox;
+    [Export]
+    public float TrackSpeed = 1;
+
+    NodePath _hurtbox;
 
 	[Export]
     public NodePath Hurtbox

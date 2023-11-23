@@ -1,20 +1,30 @@
-[gd_scene load_steps=4 format=3 uid="uid://crab2y1wlm6r8"]
+[gd_scene load_steps=6 format=3 uid="uid://crab2y1wlm6r8"]
 
+[ext_resource type="PackedScene" uid="uid://bt437vsmw6isq" path="res://Scenes/Game/UI/HUD/HUD.tscn" id="1_j5pxk"]
 [ext_resource type="PackedScene" uid="uid://dgixroi2afejj" path="res://Scenes/Game/Actors/Player/Player.tscn" id="1_s52sy"]
 [ext_resource type="PackedScene" uid="uid://dlbyykikp1nj6" path="res://Scenes/Game/Actors/Opponent/Opponent.tscn" id="2_efu1g"]
 [ext_resource type="PackedScene" uid="uid://cvdndu8codtbb" path="res://Scenes/Game/CameraAnchor/CameraAnchor.tscn" id="3_txqec"]
 
+[sub_resource type="PlaneMesh" id="PlaneMesh_kyb5u"]
+size = Vector2(16, 16)
+
 [node name="Game" type="Node3D"]
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="Hud" parent="UI" instance=ExtResource("1_j5pxk")]
+visible = false
 
 [node name="Actors" type="Node3D" parent="."]
 
 [node name="Player" parent="Actors" node_paths=PackedStringArray("_target") instance=ExtResource("1_s52sy")]
-_chargePunchState = 0
+transform = Transform3D(-0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, -0.707107, 0, 0.75, 0)
+_stopDistance = 2.0
 _target = NodePath("../Opponent")
 State = ""
 
 [node name="Opponent" parent="Actors" node_paths=PackedStringArray("_target") instance=ExtResource("2_efu1g")]
-transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0.5, -2)
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 1.125, -2)
 _target = NodePath("../Player")
 State = ""
 
@@ -22,8 +32,27 @@ State = ""
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="Map"]
 transform = Transform3D(0.707107, -0.5, -0.5, 0.707107, 0.5, 0.5, 0, -0.707107, 0.707107, 0, 5, 0)
+shadow_enabled = true
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Map"]
+mesh = SubResource("PlaneMesh_kyb5u")
+
+[node name="Corners" type="Node3D" parent="Map"]
+
+[node name="TL" type="Node3D" parent="Map/Corners"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 0, -8)
+
+[node name="TR" type="Node3D" parent="Map/Corners"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 0, -8)
+
+[node name="BR" type="Node3D" parent="Map/Corners"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 0, 8)
+
+[node name="BL" type="Node3D" parent="Map/Corners"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 0, 8)
 
 [node name="CameraAnchor" parent="." node_paths=PackedStringArray("_player", "_target") instance=ExtResource("3_txqec")]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 0)
 _player = NodePath("../Actors/Player")
 _target = NodePath("../Actors/Opponent")
-_angleOffset = -15
+_turnSpeed = 4.0

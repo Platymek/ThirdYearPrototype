@@ -8,7 +8,7 @@ public partial class Actor : Node3D
 	// Properties //
 
 	[Export]
-	Actor _target;
+	protected Actor _target;
 
 	[Export]
 	ActorStats _stats;
@@ -25,16 +25,45 @@ public partial class Actor : Node3D
 
 		set
 		{
-			_state = value;
-			_animationPlayer.Play(value);
+			if (_state != value )
+			{
+				_state = value;
+				_animationPlayer.Play(value);
+
+				GD.Print($"State: {value}");
+			}
+		}
+	}
+
+	public Vector2 Position2D
+	{
+		get
+		{
+			Vector2 position = new Vector2(
+				Position.X,
+				Position.Z);
+
+			return position;
+		}
+
+		set
+		{
+			Vector3 position = new Vector3(
+				value.X,
+				Position.Y,
+				value.Y);
+
+			Position = position;
 		}
 	}
 
 	AnimationPlayer _animationPlayer;
-	AttackStats _attackStats;
+	protected AttackStats _attackStats;
+
+	[Export]
+	public float Defence = 1;
 
 	public float Health;
-
 	public float CurrentKnockback;
 
 
@@ -52,8 +81,7 @@ public partial class Actor : Node3D
 		// initialise variables
 		Health = _stats.MaxHealth;
 		CurrentKnockback = 0;
-
-		GD.Print("hello");
+		Defence = 1;
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -61,29 +89,19 @@ public partial class Actor : Node3D
 	{
 		base._Process(delta);
 
+		// do not attempt to track if the actor has no trackspeed
+		if (_attackStats.TrackSpeed != 0)
+		{
+			TrackTarget((float)delta);
+		}
+
 		// check hurtbox if set to
 		if (_attackStats.CheckDamage)
 		{
-			GD.Print($"{Name} Attacked with hurtbox {_attackStats.Hurtbox}! And hit...");
-
-			foreach (Area3D box in GetNode<Area3D>(_attackStats.Hurtbox).GetOverlappingAreas())
-			{
-				Node victim = box.GetOwner<Node>();
-
-				GD.Print($"{victim.Name} on layer {box.CollisionLayer}...");
-
-				if (victim is Actor actor)
-				{
-					actor.Hurt(
-						_stats.Damage * _attackStats.Damage, 
-						_stats.Knockback * _attackStats.Knockback);
-				}
-			}
-
-			_attackStats.CheckDamage = false;
+			CheckDamage();
 		}
 
-
+		// process knockback
 		if (CurrentKnockback > 0)
 		{
 			ProcessKnockback((float)delta);
@@ -93,16 +111,93 @@ public partial class Actor : Node3D
 
 	// Functions //
 
-	void Hurt(float damage, float knockback)
+	void CheckDamage()
 	{
-		Health -= damage;
-		CurrentKnockback += knockback;
+		GD.Print($"{Name} Attacked with hurtbox {_attackStats.Hurtbox}! And hit...");
+
+		// check every overlapping area
+		foreach (Area3D box in GetNode<Area3D>(_attackStats.Hurtbox).GetOverlappingAreas())
+		{
+			Node victim = box.GetOwner<Node>();
+
+			GD.Print($"{victim.Name} on layer {box.CollisionLayer}...");
+
+			if (victim is Actor actor)
+			{
+				actor.Hurt(
+					_stats.Damage * _attackStats.Damage,
+					_stats.Knockback * _attackStats.Knockback);
+			}
+		}
+
+		_attackStats.CheckDamage = false;
 	}
 
+	void TrackTarget(float delta)
+	{
+		// get angle difference (the smallest angle to the target)
+
+		float angleToTarget = new Vector2(-Position.Z, Position.X)
+			.AngleToPoint(new Vector2(-_target.Position.Z, _target.Position.X))
+			* -1;
+
+		float angleDifference = Mathf.AngleDifference(Rotation.Y, angleToTarget);
+
+
+		// if the difference is 0, no rotation is needed
+
+		if (angleDifference != 0)
+		{
+			// rotate character
+
+			float deltaAngle = Mathf.Tau * delta * _attackStats.TrackSpeed * _stats.TrackSpeed;
+
+			Vector3 newRotation = Rotation;
+
+			newRotation.Y += angleDifference < 0 
+				? -deltaAngle
+				: deltaAngle;
+
+			Rotation = newRotation;
+
+
+			// get new angle difference
+
+			float newAngleToTarget = new Vector2(-Position.Z, Position.X)
+				.AngleToPoint(new Vector2(-_target.Position.Z, _target.Position.X))
+				* -1;
+
+			float newAngleDifference = Mathf.AngleDifference(Rotation.Y, newAngleToTarget);
+
+
+			// if the sign has changed, it means that the character has faced the target
+			// and point the character to the target accordingly
+
+			if ((angleDifference < 0
+				&& newAngleDifference > 0)
+				|| (angleDifference > 0
+				&& newAngleDifference < 0))
+			{
+				Rotation = new Vector3(
+					Rotation.X,
+					newAngleToTarget,
+					Rotation.Z);
+			}
+		}
+
+	}
+
+	void Hurt(float damage, float knockback)
+	{
+		Health -= damage * Defence;
+		CurrentKnockback += knockback * Defence;
+	}
+
+	// move on local rotation
 	protected void Move(Vector3 velocity)
 	{
 		// get velocity
-		Position += velocity.Rotated(Vector3.Up, Rotation.Y);
+		Position += (velocity * _stats.Speed).Rotated(Vector3.Up, Rotation.Y);
 	}
 
 	void ProcessKnockback(float delta)

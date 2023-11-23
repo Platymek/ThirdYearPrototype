@@ -13,6 +13,9 @@ public partial class CameraAnchor : Node3D
 	[Export (PropertyHint.Range, "-180,180")]
 	int _angleOffset;
 
+	[Export]
+	float _turnSpeed = 1;
+
 	Camera3D _camera;
 
 	public override void _Ready()
@@ -43,12 +46,18 @@ public partial class CameraAnchor : Node3D
 		_camera.Rotation = camRotation;
 
 
-		// rotate on Y axis to point to target
+		// rotate on Y axis to point to target //
 
 		Vector3 rotation = Rotation;
 
-		rotation.Y = new Vector2(-Position.Z, Position.X)
-			.AngleToPoint(new Vector2(-_target.Position.Z, _target.Position.X));
+		// flip angle to target
+
+		rotation.Y = Mathf.LerpAngle(
+			Rotation.Y,
+			new Vector2(-Position.Z, Position.X)
+				.AngleToPoint(new Vector2(-_target.Position.Z, _target.Position.X))
+				* -1,
+			(float)delta * _turnSpeed);
 
 		Rotation = rotation;
 	}

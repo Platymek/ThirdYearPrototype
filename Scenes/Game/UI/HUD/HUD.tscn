@@ -1,0 +1,65 @@
+[gd_scene load_steps=2 format=3 uid="uid://bt437vsmw6isq"]
+
+[ext_resource type="Script" path="res://Scenes/Game/UI/HUD/HUD.cs" id="1_6rn4j"]
+
+[node name="Hud" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_6rn4j")
+
+[node name="PlayerHealth" type="ProgressBar" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 1.02222
+anchor_right = 0.5
+anchor_bottom = 1.02222
+offset_left = -63.88
+offset_top = -40.0
+offset_right = 64.12
+offset_bottom = -13.0
+max_value = 1.0
+value = 0.75
+metadata/_edit_use_anchors_ = true
+
+[node name="Label" type="Label" parent="PlayerHealth"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.968
+offset_left = 11.88
+offset_top = -24.0
+offset_right = -8.02399
+offset_bottom = -1.0
+text = "Player Health"
+
+[node name="TargetHealth" type="ProgressBar" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.133333
+anchor_right = 0.5
+anchor_bottom = 0.133333
+offset_left = -63.88
+offset_top = -40.0
+offset_right = 64.12
+offset_bottom = -13.0
+max_value = 1.0
+value = 0.75
+metadata/_edit_use_anchors_ = true
+
+[node name="Label" type="Label" parent="TargetHealth"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 1.0
+anchor_right = 0.968
+anchor_bottom = 1.0
+offset_left = -4.11998
+offset_top = -3.0
+offset_right = 5.97601
+offset_bottom = 20.0
+text = "Opponent Health"
+horizontal_alignment = 1

@@ -23,6 +23,9 @@ public partial class ActorStats : Resource
     [Export]
     public float KnockbackDecceleration = 1;
 
+    [Export]
+    public float TrackSpeed = 1;
+
     public ActorStats() : this(1, 1, 1, 1, 1, 1) { }
 
     public ActorStats(float maxHealth, float speed, float damage, float knockback, float knockbackSpeed, float knockbackDecceleration)
