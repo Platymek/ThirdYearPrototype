@@ -15,14 +15,21 @@ public partial class AttackStats : Node
     [Export]
     public float TrackSpeed = 1;
 
+	[Export]
+	public float Defense = 1;
+
     NodePath _hurtbox;
 
 	[Export]
     public NodePath Hurtbox
 	{
 		get 
-		{ 
-			return new NodePath(_hurtbox.ToString().Substring(3));
+		{
+			NodePath n = _hurtbox == null || _hurtbox.ToString().Length < 3
+                ? null
+				: new NodePath(_hurtbox.ToString().Substring(3));
+
+			return n;
 		}
 		set
 		{

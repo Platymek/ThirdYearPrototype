@@ -36,7 +36,7 @@ offset_right = -8.02399
 offset_bottom = -1.0
 text = "Player Health"
 
-[node name="TargetHealth" type="ProgressBar" parent="."]
+[node name="OpponentHealth" type="ProgressBar" parent="."]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.5
@@ -51,7 +51,7 @@ max_value = 1.0
 value = 0.75
 metadata/_edit_use_anchors_ = true
 
-[node name="Label" type="Label" parent="TargetHealth"]
+[node name="Label" type="Label" parent="OpponentHealth"]
 layout_mode = 1
 anchors_preset = -1
 anchor_top = 1.0

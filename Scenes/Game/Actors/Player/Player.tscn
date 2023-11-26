@@ -1,9 +1,11 @@
-[gd_scene load_steps=24 format=3 uid="uid://dgixroi2afejj"]
+[gd_scene load_steps=14 format=3 uid="uid://dgixroi2afejj"]
 
 [ext_resource type="PackedScene" uid="uid://cjhb03do3yqy5" path="res://Scenes/Game/Actors/Actor.tscn" id="1_8o461"]
 [ext_resource type="Script" path="res://Scenes/Game/Actors/Player/Player.cs" id="2_ikdep"]
 [ext_resource type="Material" uid="uid://dualllpvchveu" path="res://Scenes/Game/Toon.tres" id="2_j7osn"]
 [ext_resource type="Resource" uid="uid://c0owlwa2ejyt" path="res://Scenes/Game/Actors/Player/PlayerStats.tres" id="3_18ehv"]
+[ext_resource type="AnimationLibrary" uid="uid://eihd5w0whata" path="res://Scenes/Game/Actors/Player/PlayerAnimations.res" id="4_mfp47"]
+[ext_resource type="Script" path="res://Scenes/Game/Actors/Player/PlayerAttackStats.cs" id="5_kwsjc"]
 
 [sub_resource type="Animation" id="Animation_4gvcp"]
 length = 0.001
@@ -59,48 +61,48 @@ tracks/2/keys = {
 "update": 1,
 "values": [false]
 }
-tracks/3/type = "value"
+tracks/3/type = "position_3d"
 tracks/3/imported = false
 tracks/3/enabled = true
-tracks/3/path = NodePath(".:_stateCancellable")
+tracks/3/path = NodePath("Fist")
 tracks/3/interp = 1
 tracks/3/loop_wrap = true
-tracks/3/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [true]
-}
+tracks/3/keys = PackedFloat32Array(0.1, 1, 1, 0, 0)
 tracks/4/type = "value"
 tracks/4/imported = false
 tracks/4/enabled = true
-tracks/4/path = NodePath(".:_chargePunchState")
+tracks/4/path = NodePath(".:Defence")
 tracks/4/interp = 1
 tracks/4/loop_wrap = true
 tracks/4/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [0]
+"update": 0,
+"values": [1.0]
 }
-tracks/5/type = "position_3d"
+tracks/5/type = "value"
 tracks/5/imported = false
 tracks/5/enabled = true
-tracks/5/path = NodePath("Fist")
+tracks/5/path = NodePath("AttackStats:StateCancellable")
 tracks/5/interp = 1
 tracks/5/loop_wrap = true
-tracks/5/keys = PackedFloat32Array(0.1, 1, 1, 0, 0)
+tracks/5/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
 tracks/6/type = "value"
 tracks/6/imported = false
 tracks/6/enabled = true
-tracks/6/path = NodePath(".:Defence")
+tracks/6/path = NodePath("AttackStats:ChargePunchState")
 tracks/6/interp = 1
 tracks/6/loop_wrap = true
 tracks/6/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [1.0]
+"update": 1,
+"values": [0]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_fkn7o"]
@@ -109,462 +111,13 @@ _data = {
 "idle": SubResource("Animation_e2v0j")
 }
 
-[sub_resource type="Animation" id="Animation_qll44"]
-resource_name = "PunchCharge"
-length = 1.25
-step = 0.05
-tracks/0/type = "position_3d"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Fist")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = PackedFloat32Array(0, 1, 1, 0, -0.2, 0.05, 1, 1, 0.2, -0.2, 0.1, 1, 1, 0.2, 0, 0.15, 1, 1, 0, 0, 0.2, 1, 1, 0, -0.2, 0.25, 1, 1, 0.2, -0.2, 0.3, 1, 1, 0.2, 0, 0.35, 1, 1, 0, 0, 0.45, 1, 1, 0, -0.2, 0.55, 1, 1, 0.2, -0.2, 0.65, 1, 1, 0.2, 0, 0.75, 1, 1, 0, 0, 0.85, 1, 1, 0, -0.2, 0.95, 1, 1, 0.2, -0.2, 1.05, 1, 1, 0.2, 0, 1.15, 1, 1, 0, 0, 1.25, 1, 1, 0, -0.2)
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath(".:_chargePunchState")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0.35, 1.25),
-"transitions": PackedFloat32Array(1, 1),
-"update": 1,
-"values": [1, 2]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath(".:State")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(1.25),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": ["Player/PunchChargeFull"]
-}
-tracks/3/type = "value"
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/path = NodePath("AttackStats:TrackSpeed")
-tracks/3/interp = 1
-tracks/3/loop_wrap = true
-tracks/3/keys = {
-"times": PackedFloat32Array(0, 0.35, 1.25),
-"transitions": PackedFloat32Array(1, 1, 1),
-"update": 0,
-"values": [0.5, 0.3, 0.1]
-}
-
-[sub_resource type="Animation" id="Animation_qsu2u"]
-resource_name = "PunchChargeFull"
-length = 0.8
-loop_mode = 1
-step = 0.025
-tracks/0/type = "position_3d"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Fist")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = PackedFloat32Array(0, 1, 1, 0, -0.2, 0.2, 1, 1, 0.2, -0.2, 0.4, 1, 1, 0.2, 0, 0.6, 1, 1, 0, 0)
-
-[sub_resource type="Animation" id="Animation_jqpks"]
-resource_name = "PunchHeavy"
-length = 0.8
-step = 0.05
-tracks/0/type = "position_3d"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Fist")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = PackedFloat32Array(0, 1, 1, 0, 0, 0.1, 1, 0.7, 0, -0.7, 0.2, 1, 0, 0, -1, 0.35, 1, 0, 0, -1, 0.4, 1, -1, 0, -1, 0.7, 1, -1, 0, -1, 0.8, 1, 1, 0, 0)
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("AttackStats:Damage")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [0.3]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("AttackStats:Knockback")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [5.0]
-}
-tracks/3/type = "value"
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/path = NodePath("AttackStats:CheckDamage")
-tracks/3/interp = 1
-tracks/3/loop_wrap = true
-tracks/3/keys = {
-"times": PackedFloat32Array(0.2),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [true]
-}
-tracks/4/type = "value"
-tracks/4/imported = false
-tracks/4/enabled = true
-tracks/4/path = NodePath(".:State")
-tracks/4/interp = 1
-tracks/4/loop_wrap = true
-tracks/4/keys = {
-"times": PackedFloat32Array(0.8),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": ["idle"]
-}
-tracks/5/type = "value"
-tracks/5/imported = false
-tracks/5/enabled = true
-tracks/5/path = NodePath(".:_stateCancellable")
-tracks/5/interp = 1
-tracks/5/loop_wrap = true
-tracks/5/keys = {
-"times": PackedFloat32Array(0.7),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [true]
-}
-tracks/6/type = "value"
-tracks/6/imported = false
-tracks/6/enabled = true
-tracks/6/path = NodePath("AttackStats:Hurtbox")
-tracks/6/interp = 1
-tracks/6/loop_wrap = true
-tracks/6/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [NodePath("../Hurtbox")]
-}
-
-[sub_resource type="Animation" id="Animation_au3xu"]
-resource_name = "PunchLight"
-length = 0.3
-step = 0.05
-tracks/0/type = "position_3d"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Fist")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = PackedFloat32Array(0, 1, 1, 0, 0, 0.05, 1, 0.7, 0, -0.7, 0.1, 1, 0, 0, -1, 0.2, 1, 0, 0, -1, 0.3, 1, 1, 0, 0)
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("AttackStats:Damage")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [0.05]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("AttackStats:Knockback")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [0.0]
-}
-tracks/3/type = "value"
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/path = NodePath("AttackStats:CheckDamage")
-tracks/3/interp = 1
-tracks/3/loop_wrap = true
-tracks/3/keys = {
-"times": PackedFloat32Array(0.1),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [true]
-}
-tracks/4/type = "value"
-tracks/4/imported = false
-tracks/4/enabled = true
-tracks/4/path = NodePath(".:State")
-tracks/4/interp = 1
-tracks/4/loop_wrap = true
-tracks/4/keys = {
-"times": PackedFloat32Array(0.3),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": ["idle"]
-}
-tracks/5/type = "value"
-tracks/5/imported = false
-tracks/5/enabled = true
-tracks/5/path = NodePath(".:_stateCancellable")
-tracks/5/interp = 1
-tracks/5/loop_wrap = true
-tracks/5/keys = {
-"times": PackedFloat32Array(0.225),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [true]
-}
-tracks/6/type = "value"
-tracks/6/imported = false
-tracks/6/enabled = true
-tracks/6/path = NodePath("AttackStats:Hurtbox")
-tracks/6/interp = 1
-tracks/6/loop_wrap = true
-tracks/6/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [NodePath("../Hurtbox")]
-}
-
-[sub_resource type="Animation" id="Animation_go4d2"]
-resource_name = "PunchMedium"
-length = 0.5
-step = 0.05
-tracks/0/type = "position_3d"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Fist")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = PackedFloat32Array(0, 1, 1, 0, 0, 0.1, 1, 0.7, 0, -0.7, 0.2, 1, 0, 0, -1, 0.35, 1, 0, 0, -1, 0.4, 1, -0.5, 0, -1, 0.5, 1, 1, 0, 0)
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("AttackStats:Damage")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [0.15]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("AttackStats:Knockback")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [2.0]
-}
-tracks/3/type = "value"
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/path = NodePath("AttackStats:CheckDamage")
-tracks/3/interp = 1
-tracks/3/loop_wrap = true
-tracks/3/keys = {
-"times": PackedFloat32Array(0.2),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [true]
-}
-tracks/4/type = "value"
-tracks/4/imported = false
-tracks/4/enabled = true
-tracks/4/path = NodePath(".:State")
-tracks/4/interp = 1
-tracks/4/loop_wrap = true
-tracks/4/keys = {
-"times": PackedFloat32Array(0.5),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": ["idle"]
-}
-tracks/5/type = "value"
-tracks/5/imported = false
-tracks/5/enabled = true
-tracks/5/path = NodePath(".:_stateCancellable")
-tracks/5/interp = 1
-tracks/5/loop_wrap = true
-tracks/5/keys = {
-"times": PackedFloat32Array(0.45),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [true]
-}
-tracks/6/type = "value"
-tracks/6/imported = false
-tracks/6/enabled = true
-tracks/6/path = NodePath("AttackStats:Hurtbox")
-tracks/6/interp = 1
-tracks/6/loop_wrap = true
-tracks/6/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [NodePath("../Hurtbox")]
-}
-
-[sub_resource type="Animation" id="Animation_kubjp"]
-length = 0.4
-loop_mode = 1
-tracks/0/type = "position_3d"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Fist")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = PackedFloat32Array(0, 1, 1, 0, 0, 0.1, 1, 1, 0.5, 0.5, 0.2, 1, 1, 0, 0, 0.3, 1, 1, 0.5, -0.5)
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath(".:_chargePunchState")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [0]
-}
-
-[sub_resource type="Animation" id="Animation_6cktm"]
-length = 0.2
-tracks/0/type = "position_3d"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Fist")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = PackedFloat32Array(0, 1, 1, 0, 0, 0.2, 1, 1.5, 0, 0)
-
-[sub_resource type="Animation" id="Animation_7226w"]
-resource_name = "DodgeRight"
-length = 0.2
-tracks/0/type = "position_3d"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Fist")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = PackedFloat32Array(0, 1, 1, 0, 0, 0.2, 1, 0.5, 0, 0)
-
-[sub_resource type="Animation" id="Animation_ar51h"]
-resource_name = "BlockStop"
-length = 0.3
-tracks/0/type = "position_3d"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Fist")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = PackedFloat32Array(0, 1, 0, 0.3, -0.5, 0.3, 1, 1, 0, 0)
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath(".:Defence")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [1.0]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath(".:State")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0.3),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": ["idle"]
-}
-
-[sub_resource type="Animation" id="Animation_u3spt"]
-length = 0.2
-tracks/0/type = "position_3d"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Fist")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = PackedFloat32Array(0, 1, 1, 0, 0, 0.2, 1, 0, 0.3, -0.5)
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath(".:Defence")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.2),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [0.0, 0.3]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath(".:State")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0.2),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": ["Player/Block"]
-}
-
-[sub_resource type="Animation" id="Animation_iltxj"]
-tracks/0/type = "position_3d"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Fist")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = PackedFloat32Array(0, 1, 0.3, 0, -0.5)
-
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_yh2x0"]
-_data = {
-"Block": SubResource("Animation_iltxj"),
-"BlockStart": SubResource("Animation_u3spt"),
-"BlockStop": SubResource("Animation_ar51h"),
-"DodgeLeft": SubResource("Animation_6cktm"),
-"DodgeRight": SubResource("Animation_7226w"),
-"PunchCharge": SubResource("Animation_qll44"),
-"PunchChargeFull": SubResource("Animation_qsu2u"),
-"PunchHeavy": SubResource("Animation_jqpks"),
-"PunchLight": SubResource("Animation_au3xu"),
-"PunchMedium": SubResource("Animation_go4d2"),
-"WalkForward": SubResource("Animation_kubjp")
-}
-
 [sub_resource type="CylinderMesh" id="CylinderMesh_2yrli"]
+top_radius = 0.4
 height = 1.5
 radial_segments = 16
 
-[sub_resource type="CylinderShape3D" id="CylinderShape3D_y8nny"]
-height = 1.5
+[sub_resource type="BoxShape3D" id="BoxShape3D_uc8nj"]
+size = Vector3(1, 1, 1.5)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_dbgmx"]
 
@@ -573,17 +126,12 @@ size = Vector3(0.3, 0.3, 0.3)
 
 [node name="Player" instance=ExtResource("1_8o461")]
 script = ExtResource("2_ikdep")
-_stateCancellable = true
-_chargePunchState = 0
-_stopDistance = 1.0
 _stats = ExtResource("3_18ehv")
-State = "Player/Block"
-Defence = 0.3
 
 [node name="AnimationPlayer" parent="." index="0"]
 libraries = {
 "": SubResource("AnimationLibrary_fkn7o"),
-"Player": SubResource("AnimationLibrary_yh2x0")
+"Player": ExtResource("4_mfp47")
 }
 autoplay = "idle"
 
@@ -591,10 +139,16 @@ autoplay = "idle"
 mesh = SubResource("CylinderMesh_2yrli")
 
 [node name="AttackStats" parent="." index="2"]
-TrackSpeed = 0.3
+script = ExtResource("5_kwsjc")
+StateCancellable = true
+ChargePunchState = 0
+StopDistance = 2.0
+Damage = 0.3
+Knockback = 5.0
+TrackSpeed = 0.5
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Hitbox" index="0"]
-shape = SubResource("CylinderShape3D_y8nny")
+shape = SubResource("BoxShape3D_uc8nj")
 
 [node name="Hurtbox" type="Area3D" parent="." index="4"]
 collision_layer = 2
@@ -608,12 +162,12 @@ shape = SubResource("BoxShape3D_dbgmx")
 [node name="Punch" type="Node" parent="States" index="1"]
 
 [node name="Fist" type="MeshInstance3D" parent="." index="6"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, -0.5)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0)
 material_override = ExtResource("2_j7osn")
 mesh = SubResource("BoxMesh_a0rwq")
 
 [node name="DodgeTimer" type="Timer" parent="." index="7"]
-wait_time = 0.8
+wait_time = 0.6
 one_shot = true
 
 [node name="BlockTimer" type="Timer" parent="." index="8"]

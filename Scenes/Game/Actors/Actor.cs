@@ -25,10 +25,14 @@ public partial class Actor : Node3D
 
 		set
 		{
-			if (_state != value )
+			if (_state != value)
 			{
 				_state = value;
-				_animationPlayer.Play(value);
+
+				if (_animationPlayer != null)
+				{
+					_animationPlayer.Play(value);
+				}
 
 				GD.Print($"State: {value}");
 			}
@@ -58,13 +62,19 @@ public partial class Actor : Node3D
 	}
 
 	AnimationPlayer _animationPlayer;
-	protected AttackStats _attackStats;
-
-	[Export]
-	public float Defence = 1;
+	private AttackStats _attackStats;
 
 	public float Health;
 	public float CurrentKnockback;
+
+	public float HealthPercentage
+	{
+		get => Health / _stats.MaxHealth;
+	}
+
+	// if true, disable JustHit, else make true
+	bool _justJustHit;
+	public bool JustHit;
 
 
 	// Node functions // 
@@ -81,7 +91,12 @@ public partial class Actor : Node3D
 		// initialise variables
 		Health = _stats.MaxHealth;
 		CurrentKnockback = 0;
-		Defence = 1;
+
+		_justJustHit = false;
+		JustHit = false;
+
+		State = _state;
+		_animationPlayer.Play(_state);
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -106,6 +121,16 @@ public partial class Actor : Node3D
 		{
 			ProcessKnockback((float)delta);
 		}
+
+		if (!_justJustHit)
+		{
+			_justJustHit = true;
+			JustHit = true;
+		}
+		else
+		{
+			JustHit = false;
+		}
 	}
 
 
@@ -119,8 +144,6 @@ public partial class Actor : Node3D
 		foreach (Area3D box in GetNode<Area3D>(_attackStats.Hurtbox).GetOverlappingAreas())
 		{
 			Node victim = box.GetOwner<Node>();
-
-			GD.Print($"{victim.Name} on layer {box.CollisionLayer}...");
 
 			if (victim is Actor actor)
 			{
@@ -189,8 +212,16 @@ public partial class Actor : Node3D
 
 	void Hurt(float damage, float knockback)
 	{
-		Health -= damage * Defence;
-		CurrentKnockback += knockback * Defence;
+		float finalDamage = damage * _attackStats.Defense;
+		float finalKnockback = knockback * _attackStats.Defense;
+
+		GD.Print(knockback);
+
+		Health -= finalDamage;
+		CurrentKnockback += finalKnockback;
+		_justJustHit = false;
+
+		GD.Print($"{Name} was hit for {_attackStats.Defense} damage and {finalKnockback} knockback");
 	}
 
 	// move on local rotation

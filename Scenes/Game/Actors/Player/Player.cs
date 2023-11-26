@@ -3,31 +3,20 @@ using System;
 
 public partial class Player : Actor
 {
-	// Properties //
-
-	[Export]
-	bool _stateCancellable = true;
-
-	[Export]
-	int _chargePunchState = 0;
-
-	[Export]
-	float _stopDistance = 1;
+	PlayerAttackStats _playerStats;
 
 	public override string State 
 	{ 
 		get => base.State;
 		set
 		{
-			if (
-				!(State == "Player/Block" && value == "Player/BlockStart") &&
-				!(State == "Player/BlockStop" && value == "Player/BlockStart"))
-			{
-				base.State = value;
+			base.State = value;
 
-				if (_stateCancellable)
+			if (_playerStats != null)
+			{
+				if (_playerStats.StateCancellable)
 				{
-					_attackStats.TrackSpeed = 1;
+					_playerStats.TrackSpeed = 1;
 				}
 			}
 		}
@@ -43,6 +32,7 @@ public partial class Player : Actor
 		base._Ready();
 
 		_dodgeTimer = GetNode<Timer>("DodgeTimer");
+		_playerStats = GetNode<PlayerAttackStats>("AttackStats");
 	}
 
 	public override void _Process(double delta)
@@ -50,7 +40,7 @@ public partial class Player : Actor
 		base._Process(delta);
 
 		// actions possible when the player can cancel their state
-		if (_stateCancellable)
+		if (_playerStats.StateCancellable)
 		{
 			// when left is pressed, dodge left
 			if (Input.IsActionPressed("ui_left"))
@@ -68,7 +58,7 @@ public partial class Player : Actor
 				WalkForward();
 			}
 			// when down is pressed, start blocking
-			else if (Input.IsActionPressed("ui_down"))
+			else if (Input.IsActionJustPressed("ui_down"))
 			{
 				BlockStart();
 			}
@@ -80,7 +70,7 @@ public partial class Player : Actor
 			case "Player/WalkForward":
 
 				// if no withing a certain range, walk towards opponent
-				if (Position2D.DistanceTo(_target.Position2D) > _stopDistance)
+				if (Position2D.DistanceTo(_target.Position2D) > _playerStats.StopDistance)
 				{
 					Move(new Vector3(0, 0, -4f * (float)delta));
 
@@ -105,11 +95,11 @@ public partial class Player : Actor
 				// when the player releases the button, they attack and stop tracking
 				if (Input.IsActionJustReleased("ui_up"))
 				{
-					_attackStats.TrackSpeed = 0;
+					_playerStats.TrackSpeed = 0;
 
 					// charge of punch affects type of punch
 					// (which is modified by animation player)
-					switch (_chargePunchState)
+					switch (_playerStats.ChargePunchState)
 					{
 						case 2:
 							PunchHeavy(); break;
@@ -131,6 +121,22 @@ public partial class Player : Actor
 
 
 			// block attacks (defence in AnimationPlayer)
+			case "Player/BlockStart":
+
+				if (JustHit)
+				{
+					Block();
+				}
+
+				if (!Input.IsActionPressed("ui_down"))
+				{
+					BlockStop();
+				}
+
+				break;
+
+
+			// block attacks (defence in AnimationPlayer)
 			case "Player/Block":
 
 				if (!Input.IsActionPressed("ui_down"))
@@ -147,39 +153,39 @@ public partial class Player : Actor
 
 	void Idle()
 	{
-		State = "Idle";
+		State = "idle";
 
-		_stateCancellable = true;
+		_playerStats.StateCancellable = true;
 	}
 
 	void WalkForward()
 	{
 		State = "Player/WalkForward";
-		_stateCancellable = true;
+		_playerStats.StateCancellable = true;
 	}
 
 	void PunchCharge()
 	{
 		State = "Player/PunchCharge";
-		_stateCancellable = false;
+		_playerStats.StateCancellable = false;
 	}
 
 	void PunchLight()
 	{
 		State = "Player/PunchLight";
-		_stateCancellable = false;
+		_playerStats.StateCancellable = false;
 	}
 
 	void PunchMedium()
 	{
 		State = "Player/PunchMedium";
-		_stateCancellable = false;
+		_playerStats.StateCancellable = false;
 	}
 
 	void PunchHeavy()
 	{
 		State = "Player/PunchHeavy";
-		_stateCancellable = false;
+		_playerStats.StateCancellable = false;
 	}
 
 	void Dodge(bool left)
@@ -188,13 +194,22 @@ public partial class Player : Actor
 			? "Player/DodgeLeft"
 			: "Player/DodgeRight";
 
-		_stateCancellable = false;
+		_playerStats.StateCancellable = false;
 		_dodgeTimer.Start();
 	}
 
 	void BlockStart()
 	{
 		State = "Player/BlockStart";
+
+		_playerStats.Defense = 0;
+	}
+
+	void Block()
+	{
+		State = "Player/Block";
+
+		_playerStats.Defense = 0.3f;
 	}
 
 	void BlockStop()
@@ -216,9 +231,9 @@ public partial class Player : Actor
 		{
 			Vector3 velocity = new Vector3(
 				delta 
-					* 4
+					* 5
 					// decrease speed towards end of dodge
-					* (0.3f + (float)(_dodgeTimer.TimeLeft / _dodgeTimer.WaitTime) * 0.7f)
+					* (0.0f + (float)(_dodgeTimer.TimeLeft / _dodgeTimer.WaitTime) * 1.0f)
 					* (left ? -1 : 1),
 				0, 0);
 

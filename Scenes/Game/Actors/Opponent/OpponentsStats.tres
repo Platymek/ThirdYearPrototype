@@ -9,4 +9,5 @@ Speed = 1.0
 Damage = 1.0
 Knockback = 1.0
 KnockbackSpeed = 2.0
-KnockbackDecceleration = 3.0
+KnockbackDecceleration = 2.0
+TrackSpeed = 1.0

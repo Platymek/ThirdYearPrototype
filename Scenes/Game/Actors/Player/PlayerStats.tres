@@ -7,3 +7,7 @@ script = ExtResource("1_eyx3f")
 MaxHealth = 1.0
 Speed = 1.0
 Damage = 1.0
+Knockback = 1.0
+KnockbackSpeed = 5.0
+KnockbackDecceleration = 10.0
+TrackSpeed = 0.5
