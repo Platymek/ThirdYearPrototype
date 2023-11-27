@@ -11,4 +11,7 @@ public partial class PlayerAttackStats : AttackStats
 
     [Export]
     public float StopDistance = 1;
+
+    [Export]
+    public bool CanPunch = false;
 }

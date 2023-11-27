@@ -104,14 +104,8 @@ public partial class Actor : Node3D
 	{
 		base._Process(delta);
 
-		// do not attempt to track if the actor has no trackspeed
-		if (_attackStats.TrackSpeed != 0)
-		{
-			TrackTarget((float)delta);
-		}
-
 		// check hurtbox if set to
-		if (_attackStats.CheckDamage)
+		if (_attackStats.CheckDamage && _attackStats.Hurtbox != null)
 		{
 			CheckDamage();
 		}
@@ -120,6 +114,11 @@ public partial class Actor : Node3D
 		if (CurrentKnockback > 0)
 		{
 			ProcessKnockback((float)delta);
+		}
+		// do not attempt to track if the actor has no trackspeed
+		else if (_attackStats.TrackSpeed != 0)
+		{
+			TrackTarget((float)delta);
 		}
 
 		if (!_justJustHit)
@@ -147,9 +146,12 @@ public partial class Actor : Node3D
 
 			if (victim is Actor actor)
 			{
-				actor.Hurt(
-					_stats.Damage * _attackStats.Damage,
-					_stats.Knockback * _attackStats.Knockback);
+				if (actor.Name != Name)
+				{
+					actor.Hurt(
+						_stats.Damage * _attackStats.Damage,
+						_stats.Knockback * _attackStats.Knockback);
+				}
 			}
 		}
 

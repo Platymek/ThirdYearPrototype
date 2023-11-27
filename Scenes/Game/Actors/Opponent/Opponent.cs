@@ -4,7 +4,7 @@ using System;
 
 public partial class Opponent : Actor
 {
-	OpponentAttackStats _opponentStats;
+	OpponentAttackStats _opponentAttackStats;
 
 	enum AttackTypes
 	{
@@ -21,7 +21,7 @@ public partial class Opponent : Actor
 	{
 		base._Ready();
 
-		_opponentStats = GetNode<OpponentAttackStats>("AttackStats");
+		_opponentAttackStats = GetNode<OpponentAttackStats>("AttackStats");
 
 		CurrentAttacks = new()
 		{
@@ -32,7 +32,9 @@ public partial class Opponent : Actor
 		};
 
 		CurrentAttacks[AttackTypes.CloseToCorner].Add("Opponent/SumoPressure");
-		CurrentAttacks[AttackTypes.CloseToCorner].Add("Opponent/BigPush");
+		CurrentAttacks[AttackTypes.FarFromCorner].Add("Opponent/BigPush");
+		CurrentAttacks[AttackTypes.Neutral].Add("Opponent/SumoAdvance");
+		CurrentAttacks[AttackTypes.MixUp].Add("Opponent/BigChop");
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -40,9 +42,11 @@ public partial class Opponent : Actor
 	{
 		base._Process(delta);
 
-		if (_opponentStats.FollowSpeed > 0 && Position2D.DistanceTo(_target.Position2D) > 2 && CurrentKnockback <= 0)
+		if (_opponentAttackStats.FollowSpeed > 0 && Position2D.DistanceTo(_target.Position2D) > 2 && CurrentKnockback <= 0)
 		{
-			Move(new Vector3(0, 0, -_opponentStats.FollowSpeed * (float)delta));
+			Move(new Vector3(0, 0, -_opponentAttackStats.FollowSpeed * (float)delta));
 		}
+
+
 	}
 }

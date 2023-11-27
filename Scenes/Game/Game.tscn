@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://crab2y1wlm6r8"]
+[gd_scene load_steps=8 format=3 uid="uid://crab2y1wlm6r8"]
 
 [ext_resource type="PackedScene" uid="uid://bt437vsmw6isq" path="res://Scenes/Game/UI/HUD/HUD.tscn" id="1_j5pxk"]
 [ext_resource type="PackedScene" uid="uid://dgixroi2afejj" path="res://Scenes/Game/Actors/Player/Player.tscn" id="1_s52sy"]
@@ -7,6 +7,11 @@
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_kyb5u"]
 size = Vector2(16, 16)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_modpq"]
+size = Vector2(2, 16)
+
+[sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_giv1h"]
 
 [node name="Game" type="Node3D"]
 
@@ -21,12 +26,11 @@ Opponent = NodePath("../../Actors/Opponent")
 [node name="Player" parent="Actors" node_paths=PackedStringArray("_target") instance=ExtResource("1_s52sy")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75, 0)
 _target = NodePath("../Opponent")
-State = "idle"
 
 [node name="Opponent" parent="Actors" node_paths=PackedStringArray("_target") instance=ExtResource("2_efu1g")]
-transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 1.125, -3)
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 1.125, -2)
 _target = NodePath("../Player")
-State = "Opponent/SumoAdvance"
+State = "Opponent/BigChop"
 
 [node name="Map" type="Node3D" parent="."]
 
@@ -34,8 +38,56 @@ State = "Opponent/SumoAdvance"
 transform = Transform3D(0.707107, -0.5, -0.5, 0.707107, 0.5, 0.5, 0, -0.707107, 0.707107, 0, 5, 0)
 shadow_enabled = true
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Map"]
+[node name="Floor" type="MeshInstance3D" parent="Map"]
 mesh = SubResource("PlaneMesh_kyb5u")
+
+[node name="LWall" type="Area3D" parent="Map"]
+transform = Transform3D(-4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0, 1, -8, 1, 0)
+collision_layer = 4
+collision_mask = 4
+
+[node name="LWall" type="MeshInstance3D" parent="Map/LWall"]
+mesh = SubResource("PlaneMesh_modpq")
+skeleton = NodePath("../..")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Map/LWall"]
+shape = SubResource("WorldBoundaryShape3D_giv1h")
+
+[node name="RWall" type="Area3D" parent="Map"]
+transform = Transform3D(4.37114e-08, -1, 8.74228e-08, -1, -4.37114e-08, 0, 3.82137e-15, -8.74228e-08, -1, 8, 1, 0)
+collision_layer = 4
+collision_mask = 4
+
+[node name="LWall" type="MeshInstance3D" parent="Map/RWall"]
+mesh = SubResource("PlaneMesh_modpq")
+skeleton = NodePath("../..")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Map/RWall"]
+shape = SubResource("WorldBoundaryShape3D_giv1h")
+
+[node name="UWall" type="Area3D" parent="Map"]
+transform = Transform3D(1.91069e-15, -4.37114e-08, -1, -1, -4.37114e-08, 0, -4.37114e-08, 1, -4.37114e-08, 0, 1, -8)
+collision_layer = 4
+collision_mask = 4
+
+[node name="LWall" type="MeshInstance3D" parent="Map/UWall"]
+mesh = SubResource("PlaneMesh_modpq")
+skeleton = NodePath("../..")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Map/UWall"]
+shape = SubResource("WorldBoundaryShape3D_giv1h")
+
+[node name="BWall" type="Area3D" parent="Map"]
+transform = Transform3D(1.91069e-15, -4.37114e-08, 1, -1, -4.37114e-08, 0, 4.37114e-08, -1, -4.37114e-08, 0, 1, 8)
+collision_layer = 4
+collision_mask = 4
+
+[node name="LWall" type="MeshInstance3D" parent="Map/BWall"]
+mesh = SubResource("PlaneMesh_modpq")
+skeleton = NodePath("../..")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Map/BWall"]
+shape = SubResource("WorldBoundaryShape3D_giv1h")
 
 [node name="Corners" type="Node3D" parent="Map"]
 

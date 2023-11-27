@@ -120,7 +120,7 @@ tracks/7/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
-"values": [2.0]
+"values": [0.75]
 }
 tracks/8/type = "value"
 tracks/8/imported = false
@@ -132,7 +132,7 @@ tracks/8/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
-"values": [4.0]
+"values": [1.0]
 }
 tracks/9/type = "rotation_3d"
 tracks/9/imported = false
@@ -174,15 +174,14 @@ libraries = {
 }
 
 [node name="Mesh" parent="." index="1"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 mesh = SubResource("CylinderMesh_1oj4a")
 
 [node name="AttackStats" parent="." index="2"]
 script = ExtResource("5_m3o31")
 FollowSpeed = 0.0
-Damage = 0.1
-Knockback = 2.0
-TrackSpeed = 0.1
+Knockback = 4.0
+CheckDamage = true
+TrackSpeed = 2.0
 
 [node name="Hitbox" parent="." index="3"]
 collision_layer = 2
@@ -192,7 +191,7 @@ collision_mask = 2
 shape = SubResource("BoxShape3D_a5xfy")
 
 [node name="RFist" type="MeshInstance3D" parent="." index="5"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.4, 0, 0.4)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0)
 material_override = ExtResource("3_60g2h")
 mesh = SubResource("BoxMesh_0fv5e")
 
@@ -202,7 +201,7 @@ mesh = SubResource("BoxMesh_0fv5e")
 shape = SubResource("BoxShape3D_08ioj")
 
 [node name="LFist" type="MeshInstance3D" parent="." index="6"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.4, 0, 0.4)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0, 0)
 material_override = ExtResource("3_60g2h")
 mesh = SubResource("BoxMesh_0fv5e")
 
