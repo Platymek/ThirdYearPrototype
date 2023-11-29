@@ -217,8 +217,6 @@ public partial class Actor : Node3D
 		float finalDamage = damage * _attackStats.Defense;
 		float finalKnockback = knockback * _attackStats.Defense;
 
-		GD.Print(knockback);
-
 		Health -= finalDamage;
 		CurrentKnockback += finalKnockback;
 		_justJustHit = false;

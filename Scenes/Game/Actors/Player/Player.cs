@@ -5,6 +5,32 @@ public partial class Player : Actor
 {
 	PlayerAttackStats _playerAttackStats;
 
+	Node3D _rays;
+	RayCast3D _rayBack;
+	RayCast3D _rayLeft;
+	RayCast3D _rayRight;
+
+	public float DistanceFromBackWall
+	{
+		get => _rayBack.IsColliding()
+			? (_rayBack.GetCollisionPoint() - _rayBack.GlobalPosition).Length()
+			: 0;
+	}
+
+	public float DistanceFromLeftWall
+	{
+		get => _rayLeft.IsColliding()
+			? (_rayLeft.GetCollisionPoint() - _rayLeft.GlobalPosition).Length()
+			: 0;
+	}
+
+	public float DistanceFromRightWall
+	{
+		get => _rayRight.IsColliding()
+			? (_rayRight.GetCollisionPoint() - _rayRight.GlobalPosition).Length()
+			: 0;
+	}
+
 	public override string State 
 	{ 
 		get => base.State;
@@ -33,7 +59,12 @@ public partial class Player : Actor
 
 		_dodgeTimer = GetNode<Timer>("DodgeTimer");
 		_playerAttackStats = GetNode<PlayerAttackStats>("AttackStats");
-	}
+
+		_rays = GetNode<Node3D>("Rays");
+		_rayBack = _rays.GetNode<RayCast3D>("Back");
+		_rayLeft = _rays.GetNode<RayCast3D>("Left");
+		_rayRight = _rays.GetNode<RayCast3D>("Right");
+	} 
 
 	public override void _Process(double delta)
 	{

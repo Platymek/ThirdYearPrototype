@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://dlbyykikp1nj6"]
+[gd_scene load_steps=15 format=3 uid="uid://dlbyykikp1nj6"]
 
 [ext_resource type="PackedScene" uid="uid://cjhb03do3yqy5" path="res://Scenes/Game/Actors/Actor.tscn" id="1_lb2jd"]
 [ext_resource type="Script" path="res://Scenes/Game/Actors/Opponent/Opponent.cs" id="2_j30kl"]
@@ -6,6 +6,7 @@
 [ext_resource type="Material" uid="uid://dualllpvchveu" path="res://Scenes/Game/Toon.tres" id="3_60g2h"]
 [ext_resource type="AnimationLibrary" uid="uid://ci6pfla3ui4jr" path="res://Scenes/Game/Actors/Opponent/OpponentAnimations.res" id="3_ieefj"]
 [ext_resource type="Script" path="res://Scenes/Game/Actors/Opponent/OpponentAttackStats.cs" id="5_m3o31"]
+[ext_resource type="Script" path="res://Scenes/Game/Actors/Opponent/OpponentModifiers.cs" id="6_krkkp"]
 
 [sub_resource type="Animation" id="Animation_4gvcp"]
 length = 0.001
@@ -179,18 +180,23 @@ mesh = SubResource("CylinderMesh_1oj4a")
 [node name="AttackStats" parent="." index="2"]
 script = ExtResource("5_m3o31")
 FollowSpeed = 0.0
-Knockback = 4.0
+Damage = 0.15
+Knockback = 2.0
 CheckDamage = true
-TrackSpeed = 2.0
+TrackSpeed = 0.5
 
-[node name="Hitbox" parent="." index="3"]
+[node name="Modifiers" type="Node" parent="." index="3"]
+script = ExtResource("6_krkkp")
+MixUpChance = 0.1
+
+[node name="Hitbox" parent="." index="4"]
 collision_layer = 2
 collision_mask = 2
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Hitbox" index="0"]
 shape = SubResource("BoxShape3D_a5xfy")
 
-[node name="RFist" type="MeshInstance3D" parent="." index="5"]
+[node name="RFist" type="MeshInstance3D" parent="." index="6"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0)
 material_override = ExtResource("3_60g2h")
 mesh = SubResource("BoxMesh_0fv5e")
@@ -200,7 +206,7 @@ mesh = SubResource("BoxMesh_0fv5e")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="RFist/Right" index="0"]
 shape = SubResource("BoxShape3D_08ioj")
 
-[node name="LFist" type="MeshInstance3D" parent="." index="6"]
+[node name="LFist" type="MeshInstance3D" parent="." index="7"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0, 0)
 material_override = ExtResource("3_60g2h")
 mesh = SubResource("BoxMesh_0fv5e")
@@ -209,3 +215,8 @@ mesh = SubResource("BoxMesh_0fv5e")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="LFist/Left" index="0"]
 shape = SubResource("BoxShape3D_08ioj")
+
+[node name="IdleTimer" type="Timer" parent="." index="8"]
+wait_time = 2.0
+one_shot = true
+autostart = true

@@ -160,3 +160,17 @@ one_shot = true
 
 [node name="BlockTimer" type="Timer" parent="." index="8"]
 one_shot = true
+
+[node name="Rays" type="Node3D" parent="." index="9"]
+
+[node name="Back" type="RayCast3D" parent="Rays" index="0"]
+transform = Transform3D(16, 0, 0, 0, -6.99382e-07, 16, 0, -16, -6.99382e-07, 0, 0, 0)
+collide_with_areas = true
+
+[node name="Left" type="RayCast3D" parent="Rays" index="1"]
+transform = Transform3D(-6.99382e-07, 16, 6.99382e-07, 0, -6.99382e-07, 16, 16, 6.99382e-07, 3.0571e-14, 0, 0, 0)
+collision_mask = 4
+
+[node name="Right" type="RayCast3D" parent="Rays" index="2"]
+transform = Transform3D(-6.99382e-07, -16, -6.99382e-07, 0, -6.99382e-07, 16, -16, 6.99382e-07, 3.0571e-14, 0, 0, 0)
+collision_mask = 4
