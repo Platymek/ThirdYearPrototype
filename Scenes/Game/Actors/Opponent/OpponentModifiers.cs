@@ -8,4 +8,7 @@ public partial class OpponentModifiers : Node
 
     [Export]
     public float CornerThreshold = 4f;
+
+    [Export]
+    public float RotationAcceptanceThreshold = 1;
 }

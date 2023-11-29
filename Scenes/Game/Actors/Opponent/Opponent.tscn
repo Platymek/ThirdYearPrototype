@@ -187,7 +187,7 @@ TrackSpeed = 0.5
 
 [node name="Modifiers" type="Node" parent="." index="3"]
 script = ExtResource("6_krkkp")
-MixUpChance = 0.1
+MixUpChance = 0.25
 
 [node name="Hitbox" parent="." index="4"]
 collision_layer = 2
@@ -220,3 +220,20 @@ shape = SubResource("BoxShape3D_08ioj")
 wait_time = 2.0
 one_shot = true
 autostart = true
+
+[node name="Rays" type="Node3D" parent="." index="9"]
+
+[node name="Back" type="RayCast3D" parent="Rays" index="0"]
+transform = Transform3D(20, 0, 0, 0, -8.74228e-07, 20, 0, -20, -8.74228e-07, 0, 0, 0)
+collision_mask = 4
+collide_with_areas = true
+
+[node name="Left" type="RayCast3D" parent="Rays" index="1"]
+transform = Transform3D(11.3137, 11.3137, 4.94538e-07, 0, -6.99382e-07, 16, 11.3137, -11.3137, -4.94538e-07, 0, 0, 0)
+collision_mask = 4
+collide_with_areas = true
+
+[node name="Right" type="RayCast3D" parent="Rays" index="2"]
+transform = Transform3D(11.3137, -11.3137, -4.94538e-07, 0, -6.99382e-07, 16, -11.3137, -11.3137, -4.94538e-07, 0, 0, 0)
+collision_mask = 4
+collide_with_areas = true

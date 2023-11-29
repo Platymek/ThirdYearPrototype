@@ -28,6 +28,35 @@ public partial class Opponent : Actor
 		}
 	}
 
+
+	// detectes how far the opponent is from each wall
+
+	Node3D _rays;
+
+	RayCast3D _rayBack;
+	public float DistanceFromBackWall
+	{
+		get => _rayBack.IsColliding()
+			? (_rayBack.GetCollisionPoint() - _rayBack.GlobalPosition).Length()
+			: 0;
+	}
+
+	RayCast3D _rayLeft;
+	public float DistanceFromLeftWall
+	{
+		get => _rayLeft.IsColliding()
+			? (_rayLeft.GetCollisionPoint() - _rayLeft.GlobalPosition).Length()
+			: 0;
+	}
+
+	RayCast3D _rayRight;
+	public float DistanceFromRightWall
+	{
+		get => _rayRight.IsColliding()
+			? (_rayRight.GetCollisionPoint() - _rayRight.GlobalPosition).Length()
+			: 0;
+	}
+
 	OpponentAttackStats _opponentAttackStats;
 
 	// modifiers which affect how the opponent will always act for easy tweaking
@@ -57,11 +86,16 @@ public partial class Opponent : Actor
 		_idleTimer = GetNode<Timer>("IdleTimer");
 		_modifiers = GetNode<OpponentModifiers>("Modifiers");
 
+		_rays = GetNode<Node3D>("Rays");
+		_rayBack = _rays.GetNode<RayCast3D>("Back");
+		_rayLeft = _rays.GetNode<RayCast3D>("Left");
+		_rayRight = _rays.GetNode<RayCast3D>("Right");
+
 		_attackDecider = new();
 		_attackDecider.Randomize();
 
-        // if the opponent is idle, start the idle timer
-        if (State == "idle")
+		// if the opponent is idle, start the idle timer
+		if (State == "idle")
 		{
 			_idleTimer.Start();
 		}
@@ -76,9 +110,9 @@ public partial class Opponent : Actor
 		};
 
 
-        // add starting attacks //
+		// add starting attacks //
 
-        CurrentAttacks[AttackTypes.CloseToCorner].Add("Opponent/SumoPressure");
+		CurrentAttacks[AttackTypes.CloseToCorner].Add("Opponent/SumoPressure");
 		CurrentAttacks[AttackTypes.FarFromCorner].Add("Opponent/BigPush");
 		CurrentAttacks[AttackTypes.Neutral].Add("Opponent/SumoAdvance");
 		CurrentAttacks[AttackTypes.MixUp].Add("Opponent/BigChop");
@@ -102,13 +136,13 @@ public partial class Opponent : Actor
 
 					// if timer stopped, pick an attack
 					if (_idleTimer.IsStopped())
-                    {
-                        _attackDecider.Randomize();
-                        float mixUpResult = _attackDecider.Randf();
+					{
+						_attackDecider.Randomize();
+						float mixUpResult = _attackDecider.Randf();
 
-                        GD.Print(mixUpResult, _modifiers.MixUpChance);
+						GD.Print(mixUpResult, _modifiers.MixUpChance);
 
-                        if (mixUpResult < _modifiers.MixUpChance)
+						if (mixUpResult < _modifiers.MixUpChance)
 						{
 							// choose attack using the same float normalised between 0 and 1
 							float mixUpChoice = mixUpResult / _modifiers.MixUpChance;
@@ -116,33 +150,46 @@ public partial class Opponent : Actor
 							int mixUpChoiceIndex = (int)Mathf.Floor(mixUpChoice * CurrentAttacks[AttackTypes.MixUp].Count);
 
 							State = CurrentAttacks[AttackTypes.MixUp][mixUpChoiceIndex];
-                        }
+						}
 						else
-                        {
-                            GD.Print("hello");
-
-                            float AttackChoice = mixUpResult / (1 - _modifiers.MixUpChance);
+						{
+							float attackChoice = mixUpResult / (1 - _modifiers.MixUpChance);
 
 							// choose type of attack based on 
 							AttackTypes attackType
-                                = player.DistanceFromBackWall < _modifiers.CornerThreshold
-                                ? AttackTypes.CloseToCorner
+
+								// got the player close to the wall behind them?
+								= player.DistanceFromBackWall < _modifiers.CornerThreshold
+								? AttackTypes.CloseToCorner
+
+								// is close to the wall behind themselves?
+								: (_rayBack.GetCollisionPoint() - _rayBack.GlobalPosition).Length() < _modifiers.CornerThreshold
+								? AttackTypes.FarFromCorner
+
+								// otherwise, just perform a neutral attack
 								: AttackTypes.Neutral;
 
-                            int attackIndex = (int)Mathf.Floor(AttackChoice * CurrentAttacks[attackType].Count);
 
-                            State = CurrentAttacks[attackType][attackIndex];
-                        }
+							GD.Print(attackType);
+
+							int attackIndex = (int)Mathf.Floor(attackChoice * CurrentAttacks[attackType].Count);
+
+							State = CurrentAttacks[attackType][attackIndex];
+						}
 					}
 					// else, turn around player to get better angle against wall
 					else
 					{
-						if (player.DistanceFromLeftWall > player.DistanceFromRightWall)
-
-							Move(new(1f * (float)delta, 0, 0));
-						else
-							Move(new(-1f * (float)delta, 0, 0));
+						if (DistanceFromLeftWall - _modifiers.RotationAcceptanceThreshold < DistanceFromRightWall)
+                        {
+                            Move(new(1f * (float)delta, 0, 0));
+                        }
+						else if (DistanceFromRightWall - _modifiers.RotationAcceptanceThreshold < DistanceFromLeftWall)
+                        {
+                            Move(new(-1f * (float)delta, 0, 0));
+                        }
 					}
+
 
 					break;
 			}
