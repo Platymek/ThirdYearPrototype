@@ -181,13 +181,13 @@ public partial class Opponent : Actor
 					else
 					{
 						if (DistanceFromLeftWall - _modifiers.RotationAcceptanceThreshold < DistanceFromRightWall)
-                        {
-                            Move(new(1f * (float)delta, 0, 0));
-                        }
+						{
+							Move(new(1f * (float)delta, 0, 0));
+						}
 						else if (DistanceFromRightWall - _modifiers.RotationAcceptanceThreshold < DistanceFromLeftWall)
-                        {
-                            Move(new(-1f * (float)delta, 0, 0));
-                        }
+						{
+							Move(new(-1f * (float)delta, 0, 0));
+						}
 					}
 
 

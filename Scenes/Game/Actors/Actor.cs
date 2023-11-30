@@ -76,6 +76,9 @@ public partial class Actor : Node3D
 	bool _justJustHit;
 	public bool JustHit;
 
+	float _previousDamage;
+	float _previousKnockback;
+
 
 	// Node functions // 
 
@@ -111,7 +114,7 @@ public partial class Actor : Node3D
 		}
 
 		// process knockback
-		if (CurrentKnockback > 0)
+		if (CurrentKnockback != 0)
 		{
 			ProcessKnockback((float)delta);
 		}
@@ -218,8 +221,11 @@ public partial class Actor : Node3D
 		float finalKnockback = knockback * _attackStats.Defense;
 
 		Health -= finalDamage;
-		CurrentKnockback += finalKnockback;
+		CurrentKnockback = finalKnockback;
 		_justJustHit = false;
+
+		_previousDamage = damage;
+		_previousKnockback = knockback;
 
 		GD.Print($"{Name} was hit for {_attackStats.Defense} damage and {finalKnockback} knockback");
 	}
@@ -235,6 +241,28 @@ public partial class Actor : Node3D
 	{
 		Move(new Vector3(0, 0, CurrentKnockback * delta * _stats.KnockbackSpeed));
 
-		CurrentKnockback -= delta * _stats.KnockbackDecceleration;
+		bool positiveKnockback = CurrentKnockback > 0;
+
+        CurrentKnockback -= delta * _stats.KnockbackDecceleration
+			* (positiveKnockback ? 1 : -1);
+
+		bool newPositiveKnockback = CurrentKnockback > 0;
+
+		if (positiveKnockback != newPositiveKnockback)
+		{
+			CurrentKnockback = 0;
+		}
+    }
+
+	public void WallBounce()
+	{
+		if (CurrentKnockback > 0)
+		{
+			Hurt(_previousDamage, -_previousKnockback);
+		}
+		else if (CurrentKnockback < 0)
+        {
+            Hurt(_previousDamage, 0);
+        }
 	}
 }
